@@ -13,13 +13,7 @@
  */
 export default function Card({ title, subtitle, children, className = '' }) {
   return (
-    <section
-      className={`rounded-lg border p-4 transition-shadow duration-200 hover:shadow-[0_0_14px_rgba(0,212,255,0.15)] ${className}`}
-      style={{
-        background: '#0d1330',
-        borderColor: 'rgba(0, 212, 255, 0.2)',
-      }}
-    >
+    <section className={`glass glass-hover rounded-lg p-4 ${className}`}>
       {title && <h3 className="text-sm font-medium text-slate-200">{title}</h3>}
       {subtitle && <p className="mt-0.5 text-xs text-slate-500">{subtitle}</p>}
       <div className={title || subtitle ? 'mt-3' : ''}>{children}</div>

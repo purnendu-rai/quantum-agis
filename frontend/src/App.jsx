@@ -4,6 +4,8 @@
  */
 import { Route, Routes } from 'react-router-dom';
 import useWebSocket from './hooks/useWebSocket.js';
+import QuantumBackground from './components/effects/QuantumBackground.jsx';
+import QuantumCursor from './components/effects/QuantumCursor.jsx';
 import ErrorBoundary from './components/common/ErrorBoundary.jsx';
 import Header from './components/common/Header';
 import Sidebar from './components/common/Sidebar';
@@ -20,7 +22,11 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-dark-bg">
+      <div className="quantum-cursor relative min-h-screen">
+        <div className="quantum-bg" aria-hidden="true" />
+        <div className="quantum-grid" aria-hidden="true" />
+        <QuantumBackground />
+        <QuantumCursor />
         <Header />
         <div className="flex">
           <Sidebar />

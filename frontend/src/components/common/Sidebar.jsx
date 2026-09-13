@@ -17,10 +17,7 @@ const NAV_ITEMS = [
  */
 export default function Sidebar() {
   return (
-    <nav
-      className="w-56 shrink-0 border-r px-3 py-4"
-      style={{ borderColor: 'rgba(0, 212, 255, 0.2)' }}
-    >
+    <nav className="glass w-56 shrink-0 border-y-0 border-l-0 px-3 py-4">
       <ul className="space-y-1">
         {NAV_ITEMS.map((item) => (
           <li key={item.to}>

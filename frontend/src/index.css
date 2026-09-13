@@ -1,9 +1,159 @@
+/* QUANTUM-AGIS theme — glassmorphism + dark tech palette (ui-ux-pro-max) */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --q-cyan: #00d4ff;
+  --q-purple: #6a0dad;
+  --q-bg: #0a0e27;
+  --q-card: rgba(13, 19, 48, 0.72);
+  --q-border: rgba(0, 212, 255, 0.2);
+  --q-border-strong: rgba(0, 212, 255, 0.45);
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
 body {
-  background-color: #0a0e27;
+  background-color: var(--q-bg);
   color: #ffffff;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Fira Sans', system-ui, sans-serif;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+/* Quantum data / code text */
+.font-data,
+code,
+pre {
+  font-family: 'Fira Code', ui-monospace, monospace;
+}
+
+/* Brand display type */
+.font-display {
+  font-family: 'Fira Code', monospace;
+  letter-spacing: 0.12em;
+}
+
+/* --- Quantum field background layers (fixed, behind content) --- */
+.quantum-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(ellipse 60% 45% at 15% 10%, rgba(106, 13, 173, 0.22), transparent 65%),
+    radial-gradient(ellipse 50% 40% at 85% 85%, rgba(0, 212, 255, 0.14), transparent 65%),
+    radial-gradient(ellipse 45% 35% at 70% 20%, rgba(0, 85, 255, 0.12), transparent 60%),
+    var(--q-bg);
+}
+
+.quantum-grid {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(rgba(0, 212, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 30%, black 35%, transparent 100%);
+  animation: grid-drift 24s linear infinite;
+}
+
+@keyframes grid-drift {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 44px 88px, 88px 44px; }
+}
+
+/* --- Glassmorphism panels (skill: backdrop blur 10-20px, 1px rgba border) --- */
+.glass {
+  background: var(--q-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--q-border);
+  border-radius: 10px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.glass-hover:hover {
+  border-color: var(--q-border-strong);
+  box-shadow:
+    0 0 22px rgba(0, 212, 255, 0.14),
+    inset 0 0 18px rgba(0, 212, 255, 0.04);
+}
+
+/* Gradient brand text */
+.quantum-text {
+  background: linear-gradient(90deg, var(--q-cyan), #7dd3fc 45%, #c084fc);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Live status dot pulse */
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 204, 102, 0.5); }
+  50% { box-shadow: 0 0 0 6px rgba(0, 204, 102, 0); }
+}
+.pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* --- Custom quantum cursor (fine pointers only) --- */
+@media (hover: hover) and (pointer: fine) {
+  body.quantum-cursor,
+  body.quantum-cursor a,
+  body.quantum-cursor button,
+  body.quantum-cursor input[type='range'],
+  body.quantum-cursor select,
+  body.quantum-cursor label {
+    cursor: none;
+  }
+  /* Text fields keep a caret so typing stays precise. */
+  body.quantum-cursor input[type='text'],
+  body.quantum-cursor input[type='search'],
+  body.quantum-cursor textarea {
+    cursor: text;
+  }
+}
+
+/* --- Scrollbar --- */
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0e27;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(0, 212, 255, 0.45), rgba(106, 13, 173, 0.45));
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 212, 255, 0.6);
+}
+
+::selection {
+  background: rgba(0, 212, 255, 0.35);
+  color: #ffffff;
+}
+
+/* Focus rings stay visible for keyboard navigation (accessibility) */
+:focus-visible {
+  outline: 2px solid var(--q-cyan);
+  outline-offset: 2px;
+}
+
+/* Reduced motion: freeze background + pulse animations */
+@media (prefers-reduced-motion: reduce) {
+  .quantum-grid,
+  .pulse-dot {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
 }

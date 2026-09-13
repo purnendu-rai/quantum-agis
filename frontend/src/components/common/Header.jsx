@@ -13,13 +13,10 @@ export default function Header() {
   const wsConnected = useStore((state) => state.wsConnected);
 
   return (
-    <header
-      className="flex items-center justify-between border-b px-6 py-3"
-      style={{ borderColor: 'rgba(0, 212, 255, 0.2)' }}
-    >
+    <header className="glass glass-hover sticky top-0 z-40 flex items-center justify-between border-x-0 border-t-0 px-6 py-3">
       <div>
-        <Link to="/" className="text-lg font-semibold tracking-widest text-white">
-          QUANTUM<span className="text-quantum-blue">·</span>AGIS
+        <Link to="/" className="font-display text-lg font-bold text-white">
+          QUANTUM<span className="quantum-text">·AGIS</span>
         </Link>
         <p className="text-[11px] text-slate-400">
           Quantum-inspired Agentic Governance &amp; Intrusion Shield
@@ -27,7 +24,7 @@ export default function Header() {
       </div>
       <div className="flex items-center gap-2 text-xs">
         <span
-          className={`inline-block h-2.5 w-2.5 rounded-full transition-all duration-300 ${
+          className={`pulse-dot inline-block h-2.5 w-2.5 rounded-full transition-all duration-300 ${
             wsConnected
               ? 'bg-emerald-400 shadow-[0_0_8px_2px_rgba(52,211,153,0.6)]'
               : 'bg-rose-500 shadow-[0_0_8px_2px_rgba(244,63,94,0.6)]'
