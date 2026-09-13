@@ -121,7 +121,7 @@ async def run_attack(
     detected = decision_val in (Decision.REJECT.value, Decision.QUARANTINE.value)
 
     details = {
-        "attack_intensity": intensity,
+        "attack_intensity": float(raw.get("intensity", intensity)),
         "decision": decision_val,
         "deviations": raw.get("deviations", {}),
         "chernoff_bound": raw.get("chernoff_bound", 0.0),
@@ -145,7 +145,7 @@ async def run_attack(
         source=f"attack.{at.value}",
         message=(
             f"Attack {at.value} {'DETECTED' if detected else 'UNDETECTED'} "
-            f"| trust={trust_score_after:.3f} | intensity={intensity:.2f}"
+            f"| trust={trust_score_after:.3f} | intensity={details['attack_intensity']:.2f}"
         ),
         session_id=session_id,
     )

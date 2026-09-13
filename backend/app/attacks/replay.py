@@ -55,13 +55,15 @@ class ReplayAttack(BaseAttack):
             ``replay=True``, the captured signature, and the stale
             ``timestamp`` that triggers the TCP coherence check.
         """
+        rng = self._rng()
+        intensity = self.sample_intensity(rng)
         session_id = str(context.get("session_id", "unknown-session"))
         captured_signature = context.get("signature")
         if captured_signature is None:
             captured_signature = f"CAPTURED-QSIG-{session_id}"
 
         # Replay after 1+ second: scale the base delay by intensity.
-        delay = REPLAY_DELAY_SECONDS + self.intensity * 10.0
+        delay = REPLAY_DELAY_SECONDS + intensity * 10.0
         captured_at = datetime.fromisoformat(CAPTURED_EXCHANGE_EPOCH)
         stale_timestamp = (captured_at - timedelta(seconds=delay)).isoformat()
 

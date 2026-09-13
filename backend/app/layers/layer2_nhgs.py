@@ -14,8 +14,6 @@ state is required by the analysis.
 
 from __future__ import annotations
 
-from zlib import crc32
-
 import numpy as np
 
 from app.core.constants import W_NHGS
@@ -24,7 +22,7 @@ from app.layers.base_layer import (
     STATUS_PASS,
     STATUS_SUSPICIOUS,
     BaseLayer,
-    seeded_rng,
+    request_rng,
 )
 
 #: Default lattice geometry — a 4-site chain (Hamiltonian matrix is 4x4).
@@ -199,6 +197,7 @@ class NHGSLayer(BaseLayer):
         gain = float(input_data.get("gain", DEFAULT_GAIN))
         loss = float(input_data.get("loss", DEFAULT_LOSS))
         tampered = bool(input_data.get("tampered", False))
+        intensity = float(np.clip(float(input_data.get("intensity", 1.0)), 0.1, 1.0))
 
         baseline = input_data.get("baseline_spectrum")
         if baseline is None:
@@ -208,7 +207,7 @@ class NHGSLayer(BaseLayer):
         if current is None:
             lattice = self.construct_lattice(size, gain, loss)
             if tampered:
-                rng = seeded_rng(crc32(b"nhgs-tamper"))
+                rng = request_rng(input_data, "nhgs-tamper")
                 lattice = lattice + TAMPER_NOISE_SCALE * (
                     rng.standard_normal(lattice.shape) + 1j * rng.standard_normal(lattice.shape)
                 )
@@ -237,6 +236,7 @@ class NHGSLayer(BaseLayer):
                 "lattice_size": size,
                 "gain": gain,
                 "loss": loss,
+                "intensity": intensity,
                 "spectral_shift": shift,
                 "exceptional_points": exceptional_points,
                 "broken_modes": broken_modes,

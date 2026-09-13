@@ -56,6 +56,7 @@ class CoherentAttack(BaseAttack):
             the entanglement metrics, so re-verification sees all vectors.
         """
         rng = self._rng()
+        intensity = self.sample_intensity(rng)
         session_id = str(context.get("session_id", "unknown-session"))
 
         # Ancilla entangled with the channel: normalised 2-qubit statevector.
@@ -69,7 +70,7 @@ class CoherentAttack(BaseAttack):
         )
 
         # Sub-vector intensities (shares sum to the total intensity).
-        shares = {name: _SUB_WEIGHTS[name] * self.intensity for name in _SUB_WEIGHTS}
+        shares = {name: _SUB_WEIGHTS[name] * intensity for name in _SUB_WEIGHTS}
 
         # Spectral perturbation for the tampering share.
         sensor = NHGSLayer()

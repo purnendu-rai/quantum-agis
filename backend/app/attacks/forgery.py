@@ -51,6 +51,7 @@ class ForgeryAttack(BaseAttack):
             flag the impossible marker fidelity).
         """
         rng = self._rng()
+        intensity = self.sample_intensity(rng)
         session_id = str(context.get("session_id", "unknown-session"))
 
         # Random quantum state on GENOME_DIMENSION amplitudes (normalised).
@@ -58,7 +59,6 @@ class ForgeryAttack(BaseAttack):
         statevector = amplitudes / np.linalg.norm(amplitudes)
 
         # Distort toward the extremes of each physical range by intensity.
-        intensity = self.intensity
         claimed_genome = np.empty(GENOME_DIMENSION)
         for index, (_name, (low, high, _unit)) in enumerate(GENOME_PARAMS.items()):
             block = statevector[index * 10 : (index + 1) * 10].real

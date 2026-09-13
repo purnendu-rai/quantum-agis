@@ -132,6 +132,7 @@ class MVSLayer(BaseLayer):
         forgery: bool = False,
         tamper_fraction: float = 0.0,
         include_states: bool = False,
+        request_seed: int | None = None,
     ) -> dict:
         """Produce a measurement-event signature against ``public_key``.
 
@@ -153,7 +154,10 @@ class MVSLayer(BaseLayer):
         """
         key = cls._normalise_key(public_key)
         length = key["length"]
-        rng = seeded_rng(crc32(seed_label))
+        if request_seed is not None:
+            rng = np.random.default_rng([42, crc32(seed_label), int(request_seed) % (2**63)])
+        else:
+            rng = seeded_rng(crc32(seed_label))
         events = []
         for index in range(length):
             basis = MVS_BASES[int(rng.integers(0, len(MVS_BASES)))]
@@ -360,6 +364,11 @@ class MVSLayer(BaseLayer):
             tamper_fraction = MVS_TAMPER_FRACTION if tampered else 0.0
         else:
             tamper_fraction = float(tampered)
+        # Corruption share grows with attack intensity (stays well inside the
+        # detection band so tampered signatures are always flagged).
+        tamper_fraction = float(
+            np.clip(tamper_fraction * float(input_data.get("intensity", 1.0)), 0.0, 1.0)
+        )
 
         # A plain string signature (e.g. passed from API routes) is not a
         # structured MDI event list; treat it as absent so generate_signature
@@ -369,7 +378,10 @@ class MVSLayer(BaseLayer):
 
         if signature is None:
             signature = self.generate_signature(
-                public_key, forgery=forged, tamper_fraction=tamper_fraction
+                public_key,
+                forgery=forged,
+                tamper_fraction=tamper_fraction,
+                request_seed=input_data.get("attack_seed"),
             )
 
         verdict = self.mdi_verify(signature, public_key)

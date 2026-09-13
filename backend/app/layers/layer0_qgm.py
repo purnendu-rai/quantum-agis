@@ -138,7 +138,7 @@ class QGMLayer(BaseLayer):
     # ------------------------------------------------------------------ #
     #  Verification
     # ------------------------------------------------------------------ #
-    def verify_genome(self, claimed_genome: np.ndarray) -> dict:
+    def verify_genome(self, claimed_genome: np.ndarray, request_seed: int | None = None) -> dict:
         """Compare a claimed genome against the enrolled one via Monte Carlo.
 
         Each trial adds independent 1%-of-range sensor noise to both genomes
@@ -160,7 +160,10 @@ class QGMLayer(BaseLayer):
             ]
         )
         sigma = MONTE_CARLO_NOISE_FRACTION * widths
-        rng = seeded_rng(crc32(b"qgm-verify"))
+        if request_seed is not None:
+            rng = np.random.default_rng([42, crc32(b"qgm-verify"), int(request_seed) % (2**63)])
+        else:
+            rng = seeded_rng(crc32(b"qgm-verify"))
 
         hamming_samples = np.empty(MONTE_CARLO_TRIALS)
         for trial in range(MONTE_CARLO_TRIALS):
@@ -208,13 +211,16 @@ class QGMLayer(BaseLayer):
             self.enrolled_genome = self.generate_genome(device_id)
 
         claimed = input_data.get("claimed_genome")
+        request_seed = input_data.get("attack_seed")
         if claimed is None and input_data.get("impersonation"):
-            # Attacker presents the genome of a different (intruder) device.
-            claimed = self.generate_genome("INTRUDER-DEVICE-66")
+            # Attacker presents the genome of a different (intruder) device;
+            # the intruder identity varies per attack request.
+            intruder = "INTRUDER-DEVICE-66" if request_seed is None else f"INTRUDER-{request_seed % 10000}"
+            claimed = self.generate_genome(intruder)
         if claimed is None:
             claimed = self.enrolled_genome.copy()
 
-        verdict = self.verify_genome(claimed)
+        verdict = self.verify_genome(claimed, request_seed=request_seed)
         return self.make_result(
             verdict["status"],
             verdict["deviation_score"],

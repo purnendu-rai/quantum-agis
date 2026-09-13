@@ -29,6 +29,7 @@ from app.layers.base_layer import (
     STATUS_PASS,
     STATUS_SUSPICIOUS,
     BaseLayer,
+    request_rng,
     utc_now_iso,
 )
 
@@ -412,7 +413,13 @@ class TCPLayer(BaseLayer):
         replay = bool(input_data.get("replay", False))
         stats = dict(input_data.get("photon_statistics") or {})
         if replay:
-            stats.setdefault("linewidth_m", DEFAULT_LINEWIDTH_M * REPLAY_LINEWIDTH_FACTOR)
+            # Replay capture quality varies per attempt (intensity + jitter).
+            replay_rng = request_rng(input_data, "tcp-replay")
+            jitter = 1.0 + float(replay_rng.uniform(-0.25, 0.25))
+            effective_factor = REPLAY_LINEWIDTH_FACTOR * jitter * float(
+                np.clip(float(input_data.get("intensity", 1.0)), 0.1, 1.0)
+            )
+            stats.setdefault("linewidth_m", DEFAULT_LINEWIDTH_M * effective_factor)
 
         if "coherence_length" in input_data and input_data["coherence_length"] is not None:
             tau_c = float(input_data["coherence_length"])
@@ -447,7 +454,19 @@ class TCPLayer(BaseLayer):
         else:
             status = STATUS_PASS
 
-        deviation = float(max(replay_risk, 1.0 - walk["walk_score"]))
+        if replay:
+            # Replay deviation jitters with the per-request capture quality so
+            # repeated replay attacks show natural trust-score variance.
+            deviation = float(
+                np.clip(
+                    0.97 * max(replay_risk, 1.0 - walk["walk_score"])
+                    + float(replay_rng.normal(0.0, 0.012)),
+                    0.0,
+                    1.0,
+                )
+            )
+        else:
+            deviation = float(max(replay_risk, 1.0 - walk["walk_score"]))
         historical_mean, historical_std = self._history_summary(history)
         band = COHERENCE_SIGMA_MULTIPLIER * max(
             historical_std, COHERENCE_STD_FLOOR_FRACTION * max(historical_mean, 1e-30)

@@ -9,7 +9,6 @@ key material itself is authentic.
 
 from __future__ import annotations
 
-from zlib import crc32
 
 from app.attacks.base_attack import BaseAttack
 from app.layers.base_layer import seeded_rng
@@ -52,7 +51,8 @@ class ImpersonationAttack(BaseAttack):
             ``public_key``, the ``claimed_genome`` of the attacker device
             (distorted by intensity), and ``impersonated=True``.
         """
-        rng = seeded_rng(crc32(b"impersonation-genome"))
+        rng = self._rng()
+        intensity = self.sample_intensity(rng)
         session_id = str(context.get("session_id", "unknown-session"))
         victim_device = str(context.get("device_id", "AGIS-DEVICE-001"))
 
@@ -64,7 +64,7 @@ class ImpersonationAttack(BaseAttack):
         # Attacker's own genome: victim-independent, distorted by intensity.
         attacker_genome = QGMLayer.generate_genome(IMPERSONATOR_DEVICE_ID)
         centre = attacker_genome.mean()
-        claimed_genome = (1.0 - self.intensity) * attacker_genome + self.intensity * centre
+        claimed_genome = (1.0 - intensity) * attacker_genome + intensity * centre
 
         return self._envelope(
             {

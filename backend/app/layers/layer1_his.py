@@ -13,8 +13,6 @@ efficiency. All randomness flows from the seeded RNG policy (seed 42).
 
 from __future__ import annotations
 
-from zlib import crc32
-
 import numpy as np
 
 from app.core.constants import RANDOM_SEED, W_HIS
@@ -23,7 +21,7 @@ from app.layers.base_layer import (
     STATUS_PASS,
     STATUS_SUSPICIOUS,
     BaseLayer,
-    seeded_rng,
+    request_rng,
 )
 
 #: Legitimate-device baseline visibility and its tolerated band.
@@ -55,7 +53,10 @@ class HISLayer(BaseLayer):
     # ------------------------------------------------------------------ #
     @staticmethod
     def simulate_photon_pair(
-        spectral_width: float = 1.0, distinguishable: bool = False
+        spectral_width: float = 1.0,
+        distinguishable: bool = False,
+        rng=None,
+        offset_scale: float = 1.0,
     ) -> tuple[np.ndarray, np.ndarray]:
         """Generate a pair of single-photon wavepackets on a shared time grid.
 
@@ -73,12 +74,13 @@ class HISLayer(BaseLayer):
             Tuple (psi_1, psi_2) of complex amplitude arrays, each with
             unit norm over the grid.
         """
-        rng = seeded_rng(crc32(b"his-photon"))
+        if rng is None:
+            rng = request_rng({}, "his-photon")
         sigma_1 = 1.0 / float(spectral_width)
         sigma_2 = sigma_1 * (1.0 + rng.uniform(-0.005, 0.005))
         center_1 = 0.0
         center_2 = (
-            FORGED_OFFSET_SIGMAS * sigma_1
+            FORGED_OFFSET_SIGMAS * offset_scale * sigma_1
             if distinguishable
             else rng.uniform(-0.01, 0.01) * sigma_1
         )
@@ -175,7 +177,11 @@ class HISLayer(BaseLayer):
             input_data.get("forged", False) or input_data.get("distinguishable", False)
         )
 
-        psi_1, psi_2 = self.simulate_photon_pair(spectral_width, distinguishable=distinguishable)
+        photon_rng = request_rng(input_data, "his-photon")
+        offset_scale = float(np.clip(float(input_data.get("intensity", 1.0)), 0.1, 1.0))
+        psi_1, psi_2 = self.simulate_photon_pair(
+            spectral_width, distinguishable=distinguishable, rng=photon_rng, offset_scale=offset_scale
+        )
         visibility = self.compute_hom_visibility(psi_1, psi_2)
         self.visibility_history.append(visibility)
 

@@ -17,11 +17,10 @@ so repeated runs against the same context produce identical results.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from zlib import crc32
 
 import numpy as np
 
-from app.layers.base_layer import seeded_rng, utc_now_iso
+from app.layers.base_layer import utc_now_iso
 from app.models.enums import AttackType
 
 #: Canonical keys of the standardized attack result envelope.
@@ -118,13 +117,45 @@ class BaseAttack(ABC):
         }
 
     def _rng(self) -> np.random.Generator:
-        """Return the attack's deterministic RNG stream.
+        """Return a dynamically-seeded RNG stream for this execution.
 
-        Derived from the framework seed policy plus a CRC32 of the attack
-        type, so results are reproducible without any stored state.
+        Uses OS entropy so every attack execution is unique — real quantum
+        noise never replays the same sequence twice.
 
         Returns:
             A fresh ``numpy.random.default_rng`` generator.
         """
-        return seeded_rng(crc32(self.attack_type.encode("utf-8")))
+        return np.random.default_rng()
+
+    def sample_intensity(self, rng: np.random.Generator, baseline: float | None = None) -> float:
+        """Sample a stochastically-varying attack intensity.
+
+        The effective intensity fluctuates around the baseline with a Gaussian
+        variance of +/- 0.05, clipped to [0.1, 1.0] — modelling the natural
+        variability of a real-world adversary's effort. The baseline is the
+        intensity the attack was constructed with (the caller's requested
+        level, e.g. 0.60 from the demo UI).
+
+        Args:
+            rng: Dynamic RNG stream.
+            baseline: Optional explicit mean; defaults to ``self.intensity``.
+
+        Returns:
+            Effective intensity in [0.1, 1.0].
+        """
+        base = self.intensity if baseline is None else float(baseline)
+        return float(np.clip(rng.normal(base, 0.05), 0.1, 1.0))
+
+    def noisy_deviation(self, base: float, rng: np.random.Generator, sigma: float = 0.01) -> float:
+        """Add quantum-measurement noise to a deviation score.
+
+        Args:
+            base: Base deviation in [0, 1].
+            rng: Dynamic RNG stream.
+            sigma: Gaussian noise standard deviation.
+
+        Returns:
+            Deviation with measurement noise, clipped to [0, 1].
+        """
+        return float(np.clip(base + rng.normal(0.0, sigma), 0.0, 1.0))
 

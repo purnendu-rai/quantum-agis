@@ -11,6 +11,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from datetime import datetime, timezone
 from typing import Any
+from zlib import crc32
 
 import numpy as np
 
@@ -76,6 +77,28 @@ def seeded_rng(*stream_labels: int) -> np.random.Generator:
     """
     return np.random.default_rng([RANDOM_SEED, *stream_labels])
 
+
+
+def request_rng(input_data: dict, label: str) -> np.random.Generator:
+    """Return the randomness stream for one layer execution.
+
+    Deterministic by default (label-seeded from RANDOM_SEED) so legitimate
+    verification stays reproducible. When the payload carries an
+    ``attack_seed`` — injected per attack request by the simulation service —
+    the stream is re-seeded uniquely per request, so adversarial runs show
+    natural quantum-measurement variance.
+
+    Args:
+        input_data: Layer payload (may carry ``attack_seed`` and ``intensity``).
+        label: Stream label (e.g. ``"his-photon"``).
+
+    Returns:
+        A ``numpy.random.default_rng`` generator.
+    """
+    seed = input_data.get("attack_seed")
+    if seed is None:
+        return seeded_rng(crc32(label.encode("utf-8")))
+    return np.random.default_rng([RANDOM_SEED, crc32(label.encode("utf-8")), int(seed) % (2**63)])
 
 class BaseLayer(ABC):
     """Contract implemented by every layer in the AGIS stack."""

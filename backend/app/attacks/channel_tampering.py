@@ -58,17 +58,18 @@ class ChannelTamperingAttack(BaseAttack):
             eigenvalue spread.
         """
         rng = self._rng()
+        intensity = self.sample_intensity(rng)
         session_id = str(context.get("session_id", "unknown-session"))
 
         # Depolarising noise level in [0, 1].
-        noise_level = float(rng.uniform(0.2, 1.0) * self.intensity)
+        noise_level = float(rng.uniform(0.2, 1.0) * intensity)
 
         # Balanced lattice, then skew gain/loss away from calibration.
         sensor = NHGSLayer()
         lattice = sensor.construct_lattice(
             size=DEFAULT_LATTICE_SIZE,
-            gain=DEFAULT_GAIN + self.intensity,
-            loss=DEFAULT_LOSS - self.intensity,
+            gain=DEFAULT_GAIN + intensity,
+            loss=DEFAULT_LOSS - intensity,
         )
         spectrum = sensor.compute_eigenvalues(lattice)
         spread = float(spectrum.real.max() - spectrum.real.min())
@@ -80,8 +81,8 @@ class ChannelTamperingAttack(BaseAttack):
                 "noise_level": noise_level,
                 "noise_channels": list(NOISE_CHANNELS),
                 "lattice_shape": list(lattice.shape),
-                "lattice_gain": float(DEFAULT_GAIN + self.intensity),
-                "lattice_loss": float(DEFAULT_LOSS - self.intensity),
+                "lattice_gain": float(DEFAULT_GAIN + intensity),
+                "lattice_loss": float(DEFAULT_LOSS - intensity),
                 "perturbed_spectrum_spread": spread,
             }
         )
