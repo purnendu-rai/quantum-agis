@@ -46,22 +46,23 @@ export default function TrustScoreGauge({ value }) {
   // Edge cases: null/undefined -> 0; clamp into [0, 1].
   const raw = typeof value === "number" ? value : storeTrust;
   const trustScore = Math.min(1, Math.max(0, typeof raw === "number" && !Number.isNaN(raw) ? raw : 0));
-  const percentage = Math.round(trustScore * 100);
+  const percentage = trustScore * 100; // keep decimal — displayed as 99.9%
   const color = getColor(trustScore);
   const decision = decisionFor(trustScore);
 
   return (
-    <Card title="Trust Score" subtitle={`BTFE Fusion: ${trustScore.toFixed(4)} (live)`}>
+    <Card title="Trust Score" subtitle="BTFE fusion of layers 0–5">
       <div className="flex flex-col items-center">
         <div className="relative">
           <RadialBarChart
-            key={`gauge-${percentage}`}
+            width={220}
+            height={220}
             cx="50%"
             cy="50%"
             innerRadius="70%"
             outerRadius="100%"
             barSize={20}
-            data={[{ value: percentage, fill: color }]}
+            data={[{ name: "trust", value: percentage, fill: color }]}
             startAngle={90}
             endAngle={-270}
           >
@@ -79,7 +80,7 @@ export default function TrustScoreGauge({ value }) {
               className="text-3xl font-bold transition-colors duration-500"
               style={{ color }}
             >
-              {percentage}%
+              {percentage.toFixed(1)}%
             </span>
             <span className="mt-0.5 text-[10px] text-slate-500">
               BTFE Fusion: {trustScore.toFixed(4)}
