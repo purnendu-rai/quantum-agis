@@ -29,7 +29,6 @@ export default function DashboardPage() {
   const [error, setError] = useState(null);
   const liveEvents = useStore((state) => state.recentEvents);
   const wsConnected = useStore((state) => state.wsConnected);
-  const storeTrust = useStore((state) => state.trustScore);
   const setStoreTrust = useStore((state) => state.setTrustScore);
 
   const refresh = useCallback(async () => {
@@ -82,7 +81,7 @@ export default function DashboardPage() {
       )}
       <div className={`grid grid-cols-1 gap-6 lg:grid-cols-2 ${snapshot ? '' : 'opacity-40'}`}>
         {/* Row 1 */}
-        <TrustScoreGauge value={storeTrust} />
+        <TrustScoreGauge />
         <LayerStatusGrid layerVerdicts={snapshot?.layer_verdicts ?? {}} deviations={deviations} />
         {/* Row 2 */}
         <HOMVisibilityChart series={homSeries} />

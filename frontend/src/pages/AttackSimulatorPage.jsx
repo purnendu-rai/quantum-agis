@@ -47,7 +47,7 @@ export default function AttackSimulatorPage() {
         <div className="lg:col-span-2">
           <AttackPanel />
         </div>
-        <TrustScoreGauge value={snapshot?.trust_score ?? 0} />
+        <TrustScoreGauge />
       </div>
       <SecurityEventLog events={attackEvents} />
     </div>
