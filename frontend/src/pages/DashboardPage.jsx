@@ -79,19 +79,33 @@ export default function DashboardPage() {
       {!snapshot && !error && (
         <Loader label="Connecting to the AGIS verification stack…" />
       )}
-      <div className={`grid grid-cols-1 gap-6 lg:grid-cols-2 ${snapshot ? '' : 'opacity-40'}`}>
-        {/* Row 1 */}
-        <TrustScoreGauge />
-        <LayerStatusGrid layerVerdicts={snapshot?.layer_verdicts ?? {}} deviations={deviations} />
-        {/* Row 2 */}
-        <HOMVisibilityChart series={homSeries} />
-        <AttackAlertFeed events={alerts} />
-        {/* Row 3 */}
-        <QuantumChannelFidelity series={fidelitySeries} />
-        <NHSPectrumView />
+      <div className={`grid grid-cols-1 gap-6 lg:grid-cols-12 ${snapshot ? '' : 'opacity-40'}`}>
+        {/* Row 1 — Trust Score (4) | Layer Status (8) */}
+        <div className="lg:col-span-4">
+          <TrustScoreGauge />
+        </div>
+        <div className="lg:col-span-8">
+          <LayerStatusGrid layerVerdicts={snapshot?.layer_verdicts ?? {}} deviations={deviations} />
+        </div>
+        {/* Row 2 — HOM (6) | Alerts (6) */}
+        <div className="lg:col-span-6">
+          <HOMVisibilityChart series={homSeries} />
+        </div>
+        <div className="lg:col-span-6">
+          <AttackAlertFeed events={alerts} />
+        </div>
+        {/* Row 3 — Fidelity (6) | NH Spectrum (6) */}
+        <div className="lg:col-span-6">
+          <QuantumChannelFidelity series={fidelitySeries} />
+        </div>
+        <div className="lg:col-span-6">
+          <NHSPectrumView />
+        </div>
       </div>
       {/* Row 4 */}
-      <VerificationPanel />
+      <div className="mt-6">
+        <VerificationPanel />
+      </div>
     </div>
   );
 }

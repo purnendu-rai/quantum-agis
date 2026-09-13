@@ -1,16 +1,14 @@
-/* QUANTUM-AGIS theme — glassmorphism + dark tech palette (ui-ux-pro-max) */
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap');
+/* QUANTUM-AGIS — premium quantum theme (ui-ux-pro-max + frontend-design) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --q-cyan: #00d4ff;
-  --q-purple: #6a0dad;
-  --q-bg: #0a0e27;
-  --q-card: rgba(13, 19, 48, 0.72);
-  --q-border: rgba(0, 212, 255, 0.2);
-  --q-border-strong: rgba(0, 212, 255, 0.45);
+  --q-cyan: #00f0ff;
+  --q-bg: #030014;
+  --q-border: rgba(0, 240, 255, 0.18);
+  --q-border-strong: rgba(0, 240, 255, 0.45);
 }
 
 html {
@@ -21,88 +19,127 @@ html {
 body {
   background-color: var(--q-bg);
   color: #ffffff;
-  font-family: 'Fira Sans', system-ui, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 400;
   line-height: 1.5;
   overflow-x: hidden;
 }
 
-/* Quantum data / code text */
+h1, h2, h3, h4 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Numbers / telemetry */
 .font-data,
 code,
 pre {
-  font-family: 'Fira Code', ui-monospace, monospace;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-weight: 500;
 }
 
-/* Brand display type */
 .font-display {
-  font-family: 'Fira Code', monospace;
-  letter-spacing: 0.12em;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.14em;
 }
 
-/* --- Quantum field background layers (fixed, behind content) --- */
+/* --- Background layers --- */
 .quantum-bg {
   position: fixed;
   inset: 0;
-  z-index: -2;
+  z-index: -3;
   background:
-    radial-gradient(ellipse 60% 45% at 15% 10%, rgba(106, 13, 173, 0.22), transparent 65%),
-    radial-gradient(ellipse 50% 40% at 85% 85%, rgba(0, 212, 255, 0.14), transparent 65%),
-    radial-gradient(ellipse 45% 35% at 70% 20%, rgba(0, 85, 255, 0.12), transparent 60%),
-    var(--q-bg);
+    radial-gradient(ellipse 60% 45% at 15% 8%, rgba(124, 58, 237, 0.20), transparent 65%),
+    radial-gradient(ellipse 55% 40% at 85% 88%, rgba(0, 240, 255, 0.10), transparent 65%),
+    radial-gradient(ellipse 45% 35% at 75% 18%, rgba(0, 128, 255, 0.12), transparent 60%),
+    linear-gradient(180deg, #030014 0%, #0a0a1f 55%, #13132e 100%);
 }
 
 .quantum-grid {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: -2;
   background-image:
-    linear-gradient(rgba(0, 212, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 212, 255, 0.05) 1px, transparent 1px);
-  background-size: 44px 44px;
-  mask-image: radial-gradient(ellipse 90% 80% at 50% 30%, black 35%, transparent 100%);
-  animation: grid-drift 24s linear infinite;
+    linear-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(rgba(168, 85, 247, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px, 60px 60px, 240px 240px, 240px 240px;
+  mask-image: radial-gradient(ellipse 95% 85% at 50% 25%, black 30%, transparent 100%);
+  animation: grid-drift 30s linear infinite;
 }
 
 @keyframes grid-drift {
-  from { background-position: 0 0, 0 0; }
-  to { background-position: 44px 88px, 88px 44px; }
+  from { background-position: 0 0, 0 0, 0 0, 0 0; }
+  to { background-position: 60px 120px, 120px 60px, 240px 240px, 240px 240px; }
 }
 
-/* --- Glassmorphism panels (skill: backdrop blur 10-20px, 1px rgba border) --- */
+/* --- Glassmorphism --- */
 .glass {
-  background: var(--q-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--q-border);
-  border-radius: 10px;
+  background: rgba(19, 19, 46, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
   transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
 }
 
 .glass-hover:hover {
-  border-color: var(--q-border-strong);
+  border-color: rgba(0, 240, 255, 0.4);
   box-shadow:
-    0 0 22px rgba(0, 212, 255, 0.14),
-    inset 0 0 18px rgba(0, 212, 255, 0.04);
+    0 0 26px rgba(0, 240, 255, 0.12),
+    inset 0 0 22px rgba(0, 240, 255, 0.04);
+  transform: translateY(-2px);
 }
 
 /* Gradient brand text */
 .quantum-text {
-  background: linear-gradient(90deg, var(--q-cyan), #7dd3fc 45%, #c084fc);
+  background: linear-gradient(90deg, #00f0ff, #7dd3fc 40%, #a855f7 80%, #ff00ff);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  animation: gradient 8s ease infinite;
 }
 
-/* Live status dot pulse */
+/* Shimmer sweep (used on premium badges) */
+.shimmer-text {
+  background: linear-gradient(110deg, #ffffff 30%, #00f0ff 50%, #ffffff 70%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 2.5s linear infinite;
+}
+
+/* Scan line for layer cards */
+.scanline {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.scanline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 45%;
+  background: linear-gradient(180deg, transparent, rgba(0, 240, 255, 0.06), transparent);
+  animation: scan 3s ease-in-out infinite;
+}
+
+/* Live dot pulse */
 @keyframes pulse-dot {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 204, 102, 0.5); }
-  50% { box-shadow: 0 0 0 6px rgba(0, 204, 102, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.5); }
+  50% { box-shadow: 0 0 0 6px rgba(0, 255, 136, 0); }
 }
 .pulse-dot {
   animation: pulse-dot 2s ease-in-out infinite;
 }
 
-/* --- Custom quantum cursor (fine pointers only) --- */
+/* --- Custom quantum cursor (fine pointers) --- */
 @media (hover: hover) and (pointer: fine) {
   body.quantum-cursor,
   body.quantum-cursor a,
@@ -112,7 +149,6 @@ pre {
   body.quantum-cursor label {
     cursor: none;
   }
-  /* Text fields keep a caret so typing stays precise. */
   body.quantum-cursor input[type='text'],
   body.quantum-cursor input[type='search'],
   body.quantum-cursor textarea {
@@ -122,35 +158,35 @@ pre {
 
 /* --- Scrollbar --- */
 ::-webkit-scrollbar {
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0e27;
+  background: #030014;
 }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(0, 212, 255, 0.45), rgba(106, 13, 173, 0.45));
+  background: linear-gradient(180deg, rgba(0, 240, 255, 0.5), rgba(168, 85, 247, 0.5));
   border-radius: 8px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 212, 255, 0.6);
+  background: rgba(0, 240, 255, 0.65);
 }
 
 ::selection {
-  background: rgba(0, 212, 255, 0.35);
-  color: #ffffff;
+  background: rgba(0, 240, 255, 0.3);
+  color: #fff;
 }
 
-/* Focus rings stay visible for keyboard navigation (accessibility) */
 :focus-visible {
   outline: 2px solid var(--q-cyan);
   outline-offset: 2px;
 }
 
-/* Reduced motion: freeze background + pulse animations */
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .quantum-grid,
-  .pulse-dot {
+  .pulse-dot,
+  .scanline::after {
     animation: none;
   }
   html {

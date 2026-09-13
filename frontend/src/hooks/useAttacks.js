@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import toast from 'react-hot-toast';
 import { runAttack } from '../api/attacks';
 import useStore from '../store/useStore';
 
@@ -28,6 +29,13 @@ export function useAttacks() {
       try {
         const data = await runAttack(attackType, intensity, sessionId);
         setResult(data);
+        if (data?.detected) {
+          toast.success(`${attackType} detected — trust ${(data.trust_score_after * 100).toFixed(1)}%`, {
+            icon: '🛡️',
+          });
+        } else {
+          toast.error(`${attackType} BYPASSED the stack!`);
+        }
         addEvent({
           severity: 'warning',
           source: `attack.${attackType}`,

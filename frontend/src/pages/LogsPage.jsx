@@ -3,6 +3,7 @@
  * JSON export download.
  */
 import { useCallback, useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { exportLogs, getSecurityEvents } from '../api/logs.js';
 import SecurityEventLog from '../components/dashboard/SecurityEventLog.jsx';
 import Card from '../components/common/Card.jsx';
@@ -72,13 +73,18 @@ export default function LogsPage() {
               key={level}
               type="button"
               onClick={() => setSeverity(level)}
-              className={`rounded border px-3 py-1 text-xs transition-all ${
-                severity === level
-                  ? 'border-quantum-blue/60 bg-quantum-blue/10 text-quantum-blue'
-                  : 'border-slate-700 text-slate-400 hover:text-slate-200'
+              className={`relative rounded px-3 py-1 text-xs transition-colors ${
+                severity === level ? 'text-quantum-cyan' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              {level}
+              {severity === level && (
+                <motion.span
+                  layoutId="severity-pill"
+                  className="absolute inset-0 rounded border border-quantum-cyan/60 bg-quantum-cyan/10"
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                />
+              )}
+              <span className="relative">{level}</span>
             </button>
           ))}
           <input

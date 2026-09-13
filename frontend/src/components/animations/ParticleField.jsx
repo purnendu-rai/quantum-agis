@@ -1,23 +1,22 @@
 /**
- * @file Quantum field background: drifting entangled particles that link to
- * the pointer with faint "entanglement" lines. Disabled under reduced motion
- * (requestAnimationFrame also auto-pauses in hidden tabs).
+ * @file Canvas particle field: 100 glowing quantum particles with
+ * entanglement lines between neighbours and to the pointer. 60fps target,
+ * capped particle count, disabled under reduced motion.
  */
 import { useEffect, useRef } from "react";
 
-const PARTICLE_COUNT = 55;
-const LINK_DISTANCE = 130;
+const PARTICLE_COUNT = 100;
+const LINK_DISTANCE = 120;
 
 /**
- * Full-screen quantum particle field.
- * @returns {null} Renders nothing into the React tree (canvas layer only).
+ * Quantum entanglement particle field.
+ * @returns {null} Renders nothing into the React tree.
  */
-export default function QuantumBackground() {
+export default function ParticleField() {
   const canvasRef = useRef(null);
 
   useEffect(() => {
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reducedMotion) return undefined;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -38,10 +37,10 @@ export default function QuantumBackground() {
     const particles = Array.from({ length: PARTICLE_COUNT }, () => ({
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
-      vx: (Math.random() - 0.5) * 0.35,
-      vy: (Math.random() - 0.5) * 0.35,
-      size: 0.8 + Math.random() * 1.8,
-      hue: Math.random() > 0.6 ? 270 : 187,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      size: 0.7 + Math.random() * 1.6,
+      cyan: Math.random() > 0.45,
     }));
     const pointer = { x: -9999, y: -9999 };
 
@@ -51,35 +50,52 @@ export default function QuantumBackground() {
     }
     window.addEventListener("mousemove", onMove, { passive: true });
 
-    /** Animation loop: drift particles, draw links to the pointer. */
+    /** Animation loop: drift, entangle neighbours, link to the pointer. */
     function frame() {
       ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
+      // Neighbour entanglement lines.
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const a = particles[i];
+          const b = particles[j];
+          const d = Math.hypot(a.x - b.x, a.y - b.y);
+          if (d < LINK_DISTANCE) {
+            ctx.globalAlpha = (1 - d / LINK_DISTANCE) * 0.14;
+            ctx.strokeStyle = a.cyan ? "rgba(0, 240, 255, 1)" : "rgba(168, 85, 247, 1)";
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Pointer entanglement.
+      for (const p of particles) {
+        const pd = Math.hypot(p.x - pointer.x, p.y - pointer.y);
+        if (pd < LINK_DISTANCE) {
+          ctx.globalAlpha = (1 - pd / LINK_DISTANCE) * 0.4;
+          ctx.strokeStyle = "rgba(0, 240, 255, 0.9)";
+          ctx.lineWidth = 0.7;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(pointer.x, pointer.y);
+          ctx.stroke();
+        }
+      }
+
+      // Particles.
       for (const p of particles) {
         p.x += p.vx;
         p.y += p.vy;
         if (p.x < 0 || p.x > window.innerWidth) p.vx *= -1;
         if (p.y < 0 || p.y > window.innerHeight) p.vy *= -1;
-
-        // Pointer entanglement: link nearby particles to the cursor.
-        const pd = Math.hypot(p.x - pointer.x, p.y - pointer.y);
-        if (pd < LINK_DISTANCE) {
-          ctx.globalAlpha = (1 - pd / LINK_DISTANCE) * 0.35;
-          ctx.strokeStyle = "rgba(0, 212, 255, 0.8)";
-          ctx.lineWidth = 0.6;
-          ctx.beginPath();
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(pointer.x, pointer.y);
-          ctx.stroke();
-          ctx.globalAlpha = 1;
-        }
-      }
-
-      for (const p of particles) {
-        ctx.globalAlpha = 0.55;
-        ctx.fillStyle = `hsl(${p.hue} 100% 65%)`;
-        ctx.shadowColor = `hsl(${p.hue} 100% 65%)`;
-        ctx.shadowBlur = 6;
+        ctx.globalAlpha = 0.7;
+        ctx.fillStyle = p.cyan ? "rgba(0, 240, 255, 1)" : "rgba(168, 85, 247, 1)";
+        ctx.shadowColor = p.cyan ? "rgba(0, 240, 255, 0.9)" : "rgba(168, 85, 247, 0.9)";
+        ctx.shadowBlur = 5;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();

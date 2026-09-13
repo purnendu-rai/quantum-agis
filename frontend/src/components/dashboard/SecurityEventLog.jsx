@@ -1,6 +1,7 @@
 /**
  * @file Paginated security event table with event-type filter.
  */
+import { AnimatePresence, motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
 import Badge from '../common/Badge.jsx';
 import { formatTimestamp } from '../../utils/formatters.js';
@@ -87,10 +88,17 @@ export default function SecurityEventLog({ events = [] }) {
             </tr>
           </thead>
           <tbody>
+            <AnimatePresence initial={false}>
             {rows.map((event, index) => {
               const decision = parseDecision(event);
               return (
-                <tr key={index} className="border-t border-slate-800/70">
+                <motion.tr
+                  key={`${event.timestamp}-${event.source}-${index}`}
+                  initial={{ opacity: 0, x: -14 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.22, ease: 'easeOut' }}
+                  className="border-t border-slate-800/70 hover:bg-quantum-cyan/5"
+                >
                   <td className="py-1.5 pr-2 font-mono text-slate-400">
                     {event.timestamp ? formatTimestamp(event.timestamp) : '—'}
                   </td>
@@ -110,9 +118,10 @@ export default function SecurityEventLog({ events = [] }) {
                   <td className="py-1.5 pr-2 text-slate-300">{decision}</td>
                   <td className="py-1.5 pr-2 font-mono text-slate-300">{parseTrust(event)}</td>
                   <td className="py-1.5 text-slate-400">{event.message}</td>
-                </tr>
+                </motion.tr>
               );
             })}
+            </AnimatePresence>
             {rows.length === 0 && (
               <tr>
                 <td colSpan={6} className="py-4 text-center text-slate-500">

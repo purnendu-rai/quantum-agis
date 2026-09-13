@@ -42,6 +42,7 @@ export default function AttackPanel() {
   const setTrustScore = useStore((state) => state.setTrustScore);
   const { launchAttack, result, isLoading, error } = useAttacks();
   const [intensity, setIntensity] = useState(0.6);
+  const [attackCount, setAttackCount] = useState(0);
 
   /**
    * Run one attack through the API and mirror the trust score into the store.
@@ -54,6 +55,7 @@ export default function AttackPanel() {
     if (data && typeof data.trust_score_after === 'number') {
       setTrustScore(data.trust_score_after);
     }
+    setAttackCount((count) => count + 1);
     return data;
   }
 
@@ -62,6 +64,10 @@ export default function AttackPanel() {
 
   return (
     <Card title="Attack Simulator" subtitle="Adversarial scenarios against the live 6-layer stack">
+      <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-quantum-cyan/30 bg-quantum-cyan/5 px-3 py-1 text-[11px] text-quantum-cyan">
+        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-quantum-cyan" />
+        Attacks launched this session: <span className="font-data font-semibold">{attackCount}</span>
+      </div>
       <div className="mb-4 flex items-center gap-3 text-xs text-slate-400">
         <span>attack intensity:</span>
         <input
@@ -71,7 +77,11 @@ export default function AttackPanel() {
           step="0.05"
           value={intensity}
           onChange={(event) => setIntensity(Number(event.target.value))}
-          className="flex-1 accent-rose-400"
+          className="flex-1 appearance-none rounded-full"
+          style={{
+            height: 6,
+            background: 'linear-gradient(90deg, #00f0ff, #ffb800 55%, #ff3366)',
+          }}
         />
         <span className="w-10 font-mono text-rose-300">{intensity.toFixed(2)}</span>
       </div>
