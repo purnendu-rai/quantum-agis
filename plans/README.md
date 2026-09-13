@@ -35,8 +35,8 @@ rendering edge cases beyond compile-time, Render/Vercel dashboard settings.
 | 001 | CI pipeline (backend tests + frontend build on every push) | DONE | — |
 | 002 | API hardening: input validation + rate limiting + WS shutdown | DONE | — |
 | 003 | Attack intensity slider in the UI | DONE | — |
-| 004 | Frontend unit tests (vitest: formatters, store, api client) | TODO | — |
-| 005 | Centralize verification/attack history into simulation_service | TODO | — |
+| 004 | Frontend unit tests (vitest: formatters, store) | DONE | — |
+| 005 | Centralize verification/attack history into simulation_service (+ /api/attack/history endpoint) | DONE | — |
 
 001 and 002 are independent; 003 is independent; land all three before any
 refactor of the routes they touch (005).

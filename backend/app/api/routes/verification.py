@@ -9,21 +9,19 @@ GET  /api/verify/history  — list past verification events
 from __future__ import annotations
 
 import uuid
-from collections import deque
 from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, Query, Request
 
 from app.models.enums import Decision, Verdict
 from app.models.schemas import LayerResultOut, VerificationRequest, VerificationResponse
+from app.services.simulation_service import simulation_service
 from app.utils.rate_limiter import RateLimiter
 from app.utils.validators import validate_session_id, validate_signature_format
 
 router = APIRouter(tags=["verification"])
 
 # In-memory rolling window of the last 100 verification results
-_history: deque[VerificationResponse] = deque(maxlen=100)
-
 #: 60 verifications per minute per client — generous for the demo UI.
 _verify_limiter = RateLimiter(max_requests=60, window_seconds=60.0)
 
@@ -93,7 +91,7 @@ async def verify_signature(request: Request, request_body: VerificationRequest) 
         channel_fidelity=channel_fidelity,
         layer_results=layer_results,
     )
-    _history.appendleft(response)
+    simulation_service.record_verification(response)
 
     # Record metrics and log
     metrics_service.record("trust_score", trust_score)
@@ -121,7 +119,7 @@ async def verification_history(
     Returns:
         List of VerificationResponse entries.
     """
-    return list(_history)[:limit]
+    return simulation_service.get_verification_history(limit)
 
 
 # ── helpers ───────────────────────────────────────────────────────────────────

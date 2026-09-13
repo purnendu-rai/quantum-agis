@@ -23,6 +23,8 @@ from datetime import datetime, timezone
 
 from app.engine.verification_engine import _API_DECISION_BY_DECISION, _VERDICT_BY_DECISION
 
+from app.models.schemas import AttackResponse, VerificationResponse
+
 logger = logging.getLogger("app.services.simulation")
 
 _LEGITIMATE_SESSION_ID = "sim-background"
@@ -38,6 +40,8 @@ class SimulationService:
         self._engine = get_engine()
         self._running = False
         self._event_window: deque[dict] = deque(maxlen=100)
+        self._verification_history: deque["VerificationResponse"] = deque(maxlen=100)
+        self._attack_history: list["AttackResponse"] = []
 
     # ------------------------------------------------------------------ #
     #  Public API used by route handlers
@@ -155,6 +159,46 @@ class SimulationService:
             effective_intensity,
         )
         return result
+
+    def record_verification(self, response: "VerificationResponse") -> None:
+        """Store an API verification response (newest first).
+
+        Args:
+            response: Serialised VerificationResponse from the route.
+        """
+        self._verification_history.appendleft(response)
+
+    def get_verification_history(self, limit: int = 50) -> list["VerificationResponse"]:
+        """Return recent verification responses, newest first.
+
+        Args:
+            limit: Maximum entries.
+
+        Returns:
+            List of VerificationResponse.
+        """
+        return list(self._verification_history)[:limit]
+
+    def record_attack(self, response: "AttackResponse") -> None:
+        """Store an API attack response (bounded window).
+
+        Args:
+            response: Serialised AttackResponse from the route.
+        """
+        self._attack_history.append(response)
+        if len(self._attack_history) > 100:
+            self._attack_history.pop(0)
+
+    def get_attack_history(self, limit: int = 50) -> list["AttackResponse"]:
+        """Return recent attack responses, oldest first.
+
+        Args:
+            limit: Maximum entries.
+
+        Returns:
+            List of AttackResponse.
+        """
+        return self._attack_history[-limit:]
 
     def get_recent_events(self, limit: int = 100) -> list[dict]:
         """Return the rolling window of recent verification events.

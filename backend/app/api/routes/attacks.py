@@ -11,7 +11,7 @@ from __future__ import annotations
 import random
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Path, Request
+from fastapi import APIRouter, HTTPException, Path, Query, Request
 
 from app.models.enums import AttackType, Decision, Severity, Verdict
 from app.models.schemas import AttackResponse
@@ -22,8 +22,6 @@ router = APIRouter(tags=["attacks"])
 
 # Rolling window of attack history
 _attack_history: list[AttackResponse] = []
-_MAX_HISTORY = 100
-
 #: 30 attack simulations per minute per client.
 _attack_limiter = RateLimiter(max_requests=30, window_seconds=60.0)
 
@@ -69,6 +67,23 @@ _ATTACK_PAYLOAD_FLAGS: dict[str, dict] = {
     AttackType.CHANNEL_TAMPERING.value: {"tampered": True},
     AttackType.COHERENT.value: {"forged": True, "tampered": True, "replay": True},
 }
+
+
+@router.get("/attack/history", response_model=list[AttackResponse])
+async def attack_history(
+    limit: int = Query(50, ge=1, le=100, description="Maximum entries."),
+) -> list[AttackResponse]:
+    """Return recent attack runs for the dashboard alert feed.
+
+    Args:
+        limit: Maximum entries (1-100).
+
+    Returns:
+        Chronological list of AttackResponse entries.
+    """
+    from app.services.simulation_service import simulation_service
+
+    return simulation_service.get_attack_history(limit)
 
 
 @router.get("/attack/types", response_model=list[dict])
@@ -151,9 +166,6 @@ async def run_attack(
     )
 
     # Track history
-    _attack_history.append(resp)
-    if len(_attack_history) > _MAX_HISTORY:
-        _attack_history.pop(0)
 
     # Log the attack event
     logging_service.record(
