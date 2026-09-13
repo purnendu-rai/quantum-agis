@@ -183,6 +183,14 @@ def _ensure_broadcaster() -> None:
         logger.info("Periodic dashboard_update broadcaster started.")
 
 
+def shutdown() -> None:
+    """Cancel the periodic broadcaster task (called from the app lifespan)."""
+    global _broadcaster_task
+    if _broadcaster_task is not None and not _broadcaster_task.done():
+        _broadcaster_task.cancel()
+        logger.info("Periodic dashboard_update broadcaster stopped.")
+
+
 @router.websocket("/ws/live")
 async def websocket_endpoint(websocket: WebSocket) -> None:
     """Stream live dashboard updates and instant events to a client.

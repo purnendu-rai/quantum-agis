@@ -37,6 +37,9 @@ async def _lifespan(app: FastAPI):
     # Graceful shutdown
     simulation_service.stop()
     task.cancel()
+    from app.api.websocket import shutdown as shutdown_broadcaster
+
+    shutdown_broadcaster()
     with contextlib.suppress(asyncio.CancelledError):
         await task
     logger.info("QUANTUM-AGIS shutdown complete.")

@@ -11,16 +11,21 @@ from __future__ import annotations
 import random
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Path
+from fastapi import APIRouter, HTTPException, Path, Request
 
 from app.models.enums import AttackType, Decision, Severity, Verdict
 from app.models.schemas import AttackResponse
+from app.utils.rate_limiter import RateLimiter
+from app.utils.validators import validate_intensity, validate_session_id
 
 router = APIRouter(tags=["attacks"])
 
 # Rolling window of attack history
 _attack_history: list[AttackResponse] = []
 _MAX_HISTORY = 100
+
+#: 30 attack simulations per minute per client.
+_attack_limiter = RateLimiter(max_requests=30, window_seconds=60.0)
 
 # Per-attack descriptions for the frontend AttackPanel
 _ATTACK_DESCRIPTORS: list[dict[str, Any]] = [
@@ -78,6 +83,7 @@ async def list_attack_types() -> list[dict]:
 
 @router.post("/attack/{attack_type}", response_model=AttackResponse)
 async def run_attack(
+    request: Request,
     attack_type: str = Path(..., description="One of: forgery, impersonation, replay, channel_tampering, coherent"),
     intensity: float = 0.5,
     session_id: str = "attack-session",
@@ -96,6 +102,10 @@ async def run_attack(
     from app.services.logging_service import logging_service
     from app.services.metrics_service import metrics_service
 
+    client_key = request.client.host if request.client else "testclient"
+    if not _attack_limiter.check(client_key):
+        raise HTTPException(status_code=429, detail="Rate limit exceeded. Retry in a minute.")
+
     # Validate attack type
     try:
         at = AttackType(attack_type)
@@ -105,12 +115,18 @@ async def run_attack(
             detail=f"Unknown attack type '{attack_type}'. Valid: {[e.value for e in AttackType]}",
         )
 
+    try:
+        validate_session_id(session_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    intensity = validate_intensity(intensity)
+
     # Build attacked payload — flags tell layers to simulate the attack
     flags = _ATTACK_PAYLOAD_FLAGS.get(at.value, {})
     payload: dict = {
         "session_id": session_id,
         "signature": f"ATTACK-{at.value}-{random.randint(1000, 9999)}",
-        "intensity": float(max(0.0, min(1.0, intensity))),
+        "intensity": intensity,
         **flags,
     }
 

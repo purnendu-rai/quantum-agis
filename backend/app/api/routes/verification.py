@@ -12,19 +12,24 @@ import uuid
 from collections import deque
 from typing import Annotated
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, HTTPException, Query, Request
 
 from app.models.enums import Decision, Verdict
 from app.models.schemas import LayerResultOut, VerificationRequest, VerificationResponse
+from app.utils.rate_limiter import RateLimiter
+from app.utils.validators import validate_session_id, validate_signature_format
 
 router = APIRouter(tags=["verification"])
 
 # In-memory rolling window of the last 100 verification results
 _history: deque[VerificationResponse] = deque(maxlen=100)
 
+#: 60 verifications per minute per client — generous for the demo UI.
+_verify_limiter = RateLimiter(max_requests=60, window_seconds=60.0)
+
 
 @router.post("/verify", response_model=VerificationResponse)
-async def verify_signature(request: VerificationRequest) -> VerificationResponse:
+async def verify_signature(request: Request, request_body: VerificationRequest) -> VerificationResponse:
     """Run the full 6-layer AGIS stack against a submitted signature.
 
     Args:
@@ -33,17 +38,27 @@ async def verify_signature(request: VerificationRequest) -> VerificationResponse
     Returns:
         VerificationResponse with verdict, decision, and per-layer results.
     """
+    client_key = request.client.host if request.client else "testclient"
+    if not _verify_limiter.check(client_key):
+        raise HTTPException(status_code=429, detail="Rate limit exceeded. Retry in a minute.")
+
     from app.services.simulation_service import simulation_service
     from app.services.logging_service import logging_service
     from app.services.metrics_service import metrics_service
     from app.models.enums import Severity
 
+    try:
+        validate_signature_format(request_body.signature)
+        validate_session_id(request_body.session_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+
     payload: dict = {
-        "signature": request.signature,
-        "session_id": request.session_id,
+        "signature": request_body.signature,
+        "session_id": request_body.session_id,
     }
-    if request.channel_snapshot:
-        payload.update(request.channel_snapshot)
+    if request_body.channel_snapshot:
+        payload.update(request_body.channel_snapshot)
 
     raw = await simulation_service.run_verification(payload)
 
@@ -88,7 +103,7 @@ async def verify_signature(request: VerificationRequest) -> VerificationResponse
         severity=Severity.INFO if decision == Decision.ACCEPT else Severity.WARNING,
         source="verification",
         message=f"Verification {verdict.value} | trust={trust_score:.3f} | decision={decision.value}",
-        session_id=request.session_id,
+        session_id=request_body.session_id,
     )
 
     return response

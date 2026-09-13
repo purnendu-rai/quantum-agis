@@ -2,6 +2,7 @@
  * @file Panel hosting the attack-simulation controls, per-layer deviation
  * visualisation, and the primary-detector readout.
  */
+import { useState } from 'react';
 import { runAttack } from '../../api/attacks.js';
 import { ATTACK_TYPE_LABELS, LAYER_NAMES } from '../../utils/constants.js';
 import { useStore } from '../../store/useStore.js';
@@ -40,6 +41,7 @@ export default function AttackPanel() {
   const sessionId = useStore((state) => state.sessionId);
   const setTrustScore = useStore((state) => state.setTrustScore);
   const { launchAttack, result, isLoading, error } = useAttacks();
+  const [intensity, setIntensity] = useState(0.6);
 
   /**
    * Run one attack through the API and mirror the trust score into the store.
@@ -60,6 +62,19 @@ export default function AttackPanel() {
 
   return (
     <Card title="Attack Simulator" subtitle="Adversarial scenarios against the live 6-layer stack">
+      <div className="mb-4 flex items-center gap-3 text-xs text-slate-400">
+        <span>attack intensity:</span>
+        <input
+          type="range"
+          min="0.1"
+          max="1"
+          step="0.05"
+          value={intensity}
+          onChange={(event) => setIntensity(Number(event.target.value))}
+          className="flex-1 accent-rose-400"
+        />
+        <span className="w-10 font-mono text-rose-300">{intensity.toFixed(2)}</span>
+      </div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         {ATTACK_TYPE_LABELS.map((attack) => (
           <AttackButton
@@ -70,7 +85,7 @@ export default function AttackPanel() {
             description={ATTACK_META[attack.id]?.description ?? ''}
             disabled={isLoading}
             onLaunch={handleLaunch}
-            intensity={0.6}
+            intensity={intensity}
             result={result?.attack_type === attack.id ? result : null}
           />
         ))}
