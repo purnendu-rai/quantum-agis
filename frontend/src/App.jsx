@@ -52,7 +52,7 @@ export default function App() {
               color: '#fff',
               border: '1px solid rgba(0, 240, 255, 0.3)',
               backdropFilter: 'blur(12px)',
-              fontFamily: 'Inter, sans-serif',
+              fontFamily: 'Outfit, sans-serif',
             },
           }}
         />

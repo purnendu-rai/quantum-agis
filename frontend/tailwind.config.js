@@ -25,7 +25,7 @@ export default {
         "text-muted": "#606080",
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
+        sans: ["Outfit", "system-ui", "sans-serif"],
         data: ["JetBrains Mono", "ui-monospace", "monospace"],
       },
       animation: {

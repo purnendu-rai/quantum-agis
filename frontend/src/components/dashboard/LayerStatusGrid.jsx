@@ -40,11 +40,15 @@ export default function LayerStatusGrid({ layerVerdicts = {}, deviations = {} })
             key={name}
             whileHover={{ y: -4 }}
             transition={{ type: 'spring', stiffness: 320, damping: 22 }}
-            className="glass glass-hover relative overflow-hidden p-3"
+            className="glass glass-hover group relative overflow-hidden p-3"
             style={{ borderColor: `${color}33` }}
             title={`${name} — ${fullName}`}
           >
-            <ScanLine color={`${color}14`} />
+            <div
+              className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            >
+              <ScanLine color={`${color}20`} />
+            </div>
             <div className="relative flex items-center justify-between">
               <div className="flex items-center gap-1.5">
                 <Icon size={14} style={{ color, filter: `drop-shadow(0 0 4px ${color}88)` }} />
