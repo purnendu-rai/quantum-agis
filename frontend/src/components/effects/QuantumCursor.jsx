@@ -17,6 +17,9 @@ export default function QuantumCursor() {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!finePointer || reducedMotion) return undefined;
 
+    // Hide the native OS cursor while the quantum cursor layer is active.
+    document.body.classList.add("quantum-cursor");
+
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -144,6 +147,7 @@ export default function QuantumCursor() {
     return () => {
       running = false;
       cancelAnimationFrame(raf);
+      document.body.classList.remove("quantum-cursor");
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mousedown", onDown);

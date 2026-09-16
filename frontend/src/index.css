@@ -141,20 +141,14 @@ pre {
   animation: pulse-dot 2s ease-in-out infinite;
 }
 
-/* --- Custom quantum cursor (fine pointers) --- */
+/* --- Custom quantum cursor (fine pointers only) ---
+   QuantumCursor toggles `quantum-cursor` on <body> when its canvas layer is
+   active; the catch-all hides the native OS cursor everywhere so ONLY the
+   animated cursor is visible. */
 @media (hover: hover) and (pointer: fine) {
   body.quantum-cursor,
-  body.quantum-cursor a,
-  body.quantum-cursor button,
-  body.quantum-cursor input[type='range'],
-  body.quantum-cursor select,
-  body.quantum-cursor label {
-    cursor: none;
-  }
-  body.quantum-cursor input[type='text'],
-  body.quantum-cursor input[type='search'],
-  body.quantum-cursor textarea {
-    cursor: text;
+  body.quantum-cursor * {
+    cursor: none !important;
   }
 }
 

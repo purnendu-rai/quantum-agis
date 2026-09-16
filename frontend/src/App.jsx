@@ -41,7 +41,7 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <div className="quantum-cursor relative min-h-screen">
+      <div className="relative min-h-screen">
         <QuantumBackground />
         <QuantumCursor />
         <Toaster

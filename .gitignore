@@ -27,3 +27,6 @@ backend/logs/
 # OS
 .DS_Store
 Thumbs.db
+
+# Secrets & local context
+context.txt
