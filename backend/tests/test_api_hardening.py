@@ -87,3 +87,15 @@ class TestRateLimiting:
 
         time.sleep(0.06)
         assert limiter.check("ip-c") is True
+
+
+class TestSecurityHeaders:
+    """Defensive HTTP headers applied to all responses."""
+
+    def test_security_headers_present(self, client: TestClient):
+        """Responses include nosniff, DENY, and Referrer-Policy."""
+        response = client.get("/api/health")
+        assert response.headers.get("X-Content-Type-Options") == "nosniff"
+        assert response.headers.get("X-Frame-Options") == "DENY"
+        assert response.headers.get("Referrer-Policy") == "strict-origin-when-cross-origin"
+

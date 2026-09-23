@@ -14,7 +14,7 @@ import asyncio
 import contextlib
 import logging
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
@@ -53,8 +53,22 @@ app = FastAPI(
         "layered quantum-secured verification and threat detection API."
     ),
     debug=settings.DEBUG,
+    docs_url="/docs" if (settings.DEBUG and not settings.is_production) else None,
+    redoc_url="/redoc" if (settings.DEBUG and not settings.is_production) else None,
+    openapi_url="/openapi.json" if (settings.DEBUG and not settings.is_production) else None,
     lifespan=_lifespan,
 )
+
+
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    """Add defensive HTTP security headers to all API responses."""
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    return response
+
 
 app.add_middleware(
     CORSMiddleware,

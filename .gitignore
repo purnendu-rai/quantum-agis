@@ -30,3 +30,13 @@ Thumbs.db
 
 # Secrets & local context
 context.txt
+
+# Sensitive documentation, plans, and security audits
+plans/
+docs/
+security/
+
+# Sample frontend preview (isolated prototype, do not commit or deploy)
+sample frontend/
+sample-frontend/
+
