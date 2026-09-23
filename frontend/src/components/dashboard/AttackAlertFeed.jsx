@@ -69,8 +69,8 @@ export default function AttackAlertFeed({ events = [] }) {
               >
                 <meta.Icon size={13} style={{ color: meta.border }} className="shrink-0" />
                 <div className="min-w-0 flex-1">
-                  <div className="truncate text-slate-300">{event.message ?? event.source}</div>
-                  <div className="font-data text-[10px] text-slate-500">
+                  <div className="truncate text-xs font-medium text-slate-200">{event.message ?? event.source}</div>
+                  <div className="font-data tabular-nums text-xs text-slate-400">
                     {event.timestamp ? formatTimestamp(event.timestamp) : ''} · {event.source}
                     {trust !== null && ` · trust ${trust.toFixed(3)}`}
                   </div>

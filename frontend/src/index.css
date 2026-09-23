@@ -1,5 +1,4 @@
-/* QUANTUM-AGIS — premium quantum theme (ui-ux-pro-max + frontend-design) */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+/* QUANTUM-AGIS — typography & visual hierarchy system */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -19,29 +18,64 @@ html {
 body {
   background-color: var(--q-bg);
   color: #ffffff;
-  font-family: 'Outfit', system-ui, sans-serif;
+  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 1.55;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-h1, h2, h3, h4 {
+h1 {
   font-weight: 700;
   letter-spacing: -0.03em;
-  line-height: 1.1;
+  line-height: 1.15;
+}
+
+h2 {
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+h3 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+}
+
+h4 {
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.4;
+}
+
+/* Tabular numbers for non-wobbling metrics & live clocks */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }
 
 /* Numbers / telemetry */
 .font-data,
 code,
 pre {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+  font-variant-numeric: tabular-nums;
   font-weight: 500;
 }
 
 .font-display {
   font-family: 'JetBrains Mono', monospace;
-  letter-spacing: 0.14em;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.12em;
+}
+
+.badge-text {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 /* --- Background layers --- */

@@ -25,7 +25,7 @@ export default function Badge({ label, variant = 'gray', tone }) {
   const key = VARIANTS[variant] ? variant : tone && VARIANTS[tone] ? tone : 'gray';
   return (
     <span
-      className={`inline-flex items-center rounded border px-2 py-0.5 text-[11px] font-medium ${VARIANTS[key]}`}
+      className={`inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold tracking-wider uppercase tabular-nums shadow-sm ${VARIANTS[key]}`}
     >
       {label}
     </span>

@@ -36,13 +36,13 @@ export default function GlassCard({ title, subtitle, children, className = "", a
         style={{ background: `linear-gradient(90deg, transparent, ${accent}88, transparent)` }}
       />
       {title && (
-        <h3 className="text-sm font-semibold tracking-tight text-white">
+        <h3 className="flex items-center text-base font-semibold tracking-tight text-white">
           {title}
           <span className="ml-2 inline-block h-1.5 w-1.5 rounded-full align-middle" style={{ background: accent, boxShadow: `0 0 8px ${accent}` }} />
         </h3>
       )}
-      {subtitle && <p className="mt-0.5 text-xs text-text-secondary">{subtitle}</p>}
-      <div className={title || subtitle ? "mt-3" : ""}>{children}</div>
+      {subtitle && <p className="mt-1 text-xs font-normal leading-normal text-slate-300">{subtitle}</p>}
+      <div className={title || subtitle ? "mt-3.5" : ""}>{children}</div>
     </motion.section>
   );
 }

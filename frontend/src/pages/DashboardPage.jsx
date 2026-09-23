@@ -69,11 +69,23 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Security Dashboard</h1>
-        <span className="text-xs text-slate-500">
-          WebSocket: {wsConnected ? '🟢 live' : '🔴 reconnecting…'}
-        </span>
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-white">Security Dashboard</h1>
+          <p className="mt-1 text-xs font-normal text-slate-300">
+            Real-time multi-layer quantum signature telemetry, trust scoring, and active intrusion shield
+          </p>
+        </div>
+        <div className="flex items-center gap-2 rounded-full border border-white/10 bg-cosmos/80 px-3.5 py-1 text-xs font-medium backdrop-blur-md">
+          <span
+            className={`inline-block h-2 w-2 rounded-full ${
+              wsConnected ? 'bg-quantum-green animate-pulse shadow-[0_0_8px_#00ff88]' : 'bg-quantum-red'
+            }`}
+          />
+          <span className="font-data tabular-nums font-semibold tracking-wider text-slate-200">
+            {wsConnected ? 'LIVE TELEMETRY' : 'RECONNECTING'}
+          </span>
+        </div>
       </div>
       {error && <p className="text-xs text-rose-300">backend unreachable — retrying automatically…</p>}
       {!snapshot && !error && (

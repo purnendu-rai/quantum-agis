@@ -19,12 +19,14 @@ import { formatTimestamp } from '../../utils/formatters.js';
 
 /** Glassmorphism tooltip style shared by all charts. */
 export const CHART_TOOLTIP_STYLE = {
-  background: 'rgba(19, 19, 46, 0.85)',
-  backdropFilter: 'blur(12px)',
-  border: '1px solid rgba(0, 240, 255, 0.3)',
-  borderRadius: 10,
-  fontSize: 11,
-  fontFamily: 'JetBrains Mono, monospace',
+  background: 'rgba(19, 19, 46, 0.92)',
+  backdropFilter: 'blur(16px)',
+  border: '1px solid rgba(0, 240, 255, 0.35)',
+  borderRadius: 8,
+  fontSize: 12,
+  fontFamily: 'JetBrains Mono, ui-monospace, monospace',
+  color: '#ffffff',
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
 };
 
 /**
@@ -49,8 +51,8 @@ function HOMVisibilityChart({ series = [] }) {
             </linearGradient>
           </defs>
           <CartesianGrid stroke="rgba(255,255,255,0.05)" />
-          <XAxis dataKey="time" stroke="#606080" tick={{ fontSize: 11 }} />
-          <YAxis domain={[0, 1]} stroke="#606080" tick={{ fontSize: 11 }} />
+          <XAxis dataKey="time" stroke="#94a3b8" tick={{ fontSize: 11, fill: '#94a3b8', fontFamily: 'JetBrains Mono, monospace' }} />
+          <YAxis domain={[0, 1]} stroke="#94a3b8" tick={{ fontSize: 11, fill: '#94a3b8', fontFamily: 'JetBrains Mono, monospace' }} />
           <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
           <ReferenceLine
             y={0.95}

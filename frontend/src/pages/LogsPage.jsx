@@ -65,8 +65,13 @@ export default function LogsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-xl font-semibold">Security Logs</h1>
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-white">Security Event Audit Trail</h1>
+          <p className="mt-1 text-xs font-normal text-slate-300">
+            Immutable audit record of quantum layer evaluations, threat verdicts, and access challenges
+          </p>
+        </div>
         <div className="flex flex-wrap items-center gap-2">
           {SEVERITIES.map((level) => (
             <button

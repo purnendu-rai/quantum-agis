@@ -157,16 +157,16 @@ export default function TrustScoreGauge({ value }) {
 
         {/* Center content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-[10px] font-semibold tracking-[0.25em] text-text-secondary">
+          <span className="text-xs font-bold tracking-[0.2em] uppercase text-slate-300">
             TRUST SCORE
           </span>
           <AnimatedNumber
             value={trustScore * 100}
             decimals={1}
             suffix="%"
-            className="text-4xl font-bold"
+            className="font-data tabular-nums text-4xl font-extrabold tracking-tight text-white drop-shadow-[0_0_16px_rgba(0,240,255,0.35)]"
           />
-          <span className="font-data mt-0.5 text-[10px] text-slate-500">
+          <span className="font-data tabular-nums mt-1 text-xs font-semibold text-slate-400">
             BTFE Fusion: {trustScore.toFixed(4)}
           </span>
         </div>

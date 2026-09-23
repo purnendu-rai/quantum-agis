@@ -41,8 +41,8 @@ function QuantumChannelFidelity({ series = [] }) {
             </linearGradient>
           </defs>
           <CartesianGrid stroke="rgba(255,255,255,0.05)" />
-          <XAxis dataKey="time" stroke="#606080" tick={{ fontSize: 11 }} />
-          <YAxis domain={[0, 1]} stroke="#606080" tick={{ fontSize: 11 }} />
+          <XAxis dataKey="time" stroke="#94a3b8" tick={{ fontSize: 11, fill: '#94a3b8', fontFamily: 'JetBrains Mono, monospace' }} />
+          <YAxis domain={[0, 1]} stroke="#94a3b8" tick={{ fontSize: 11, fill: '#94a3b8', fontFamily: 'JetBrains Mono, monospace' }} />
           <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
           <ReferenceArea y1={0.9} y2={1.0} fill="#00ff88" fillOpacity={0.08} />
           <ReferenceArea y1={0} y2={0.9} fill="#ff3366" fillOpacity={0.04} />

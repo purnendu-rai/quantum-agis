@@ -21,12 +21,24 @@ export default {
         "quantum-violet": "#7c3aed",
         // Text
         "text-primary": "#ffffff",
-        "text-secondary": "#a0a0c0",
-        "text-muted": "#606080",
+        "text-secondary": "#cbd5e1",
+        "text-muted": "#94a3b8",
       },
       fontFamily: {
-        sans: ["Outfit", "system-ui", "sans-serif"],
-        data: ["JetBrains Mono", "ui-monospace", "monospace"],
+        sans: ["Outfit", "system-ui", "-apple-system", "sans-serif"],
+        data: ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "monospace"],
+        mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "monospace"],
+      },
+      fontSize: {
+        "2xs": ["0.6875rem", { lineHeight: "1rem", letterSpacing: "0.04em" }],
+        xs: ["0.75rem", { lineHeight: "1.15rem", letterSpacing: "0.01em" }],
+        sm: ["0.875rem", { lineHeight: "1.375rem", letterSpacing: "0" }],
+        base: ["1rem", { lineHeight: "1.6rem", letterSpacing: "-0.01em" }],
+        lg: ["1.125rem", { lineHeight: "1.625rem", letterSpacing: "-0.015em" }],
+        xl: ["1.25rem", { lineHeight: "1.75rem", letterSpacing: "-0.02em" }],
+        "2xl": ["1.5rem", { lineHeight: "2rem", letterSpacing: "-0.025em" }],
+        "3xl": ["1.875rem", { lineHeight: "2.25rem", letterSpacing: "-0.03em" }],
+        "4xl": ["2.25rem", { lineHeight: "2.5rem", letterSpacing: "-0.035em" }],
       },
       animation: {
         "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",

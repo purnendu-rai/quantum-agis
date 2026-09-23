@@ -49,18 +49,18 @@ export default function Header() {
       <div className="flex items-center gap-3">
         <AtomLogo />
         <div>
-          <Link to="/" className="font-display text-lg font-bold text-white">
+          <Link to="/" className="font-display text-xl font-bold tracking-wider text-white">
             QUANTUM
             <span className="quantum-text">·AGIS</span>
           </Link>
-          <p className="text-[11px] text-text-muted">
+          <p className="text-xs font-normal text-slate-300 leading-tight mt-0.5">
             Quantum-inspired Agentic Governance &amp; Intrusion Shield
           </p>
         </div>
       </div>
 
       <div className="flex items-center gap-5">
-        <div className="flex items-center gap-2 text-xs">
+        <div className="flex items-center gap-2 text-xs font-medium">
           <span
             className={`pulse-dot inline-block h-2.5 w-2.5 rounded-full transition-all duration-300 ${
               wsConnected
@@ -68,11 +68,14 @@ export default function Header() {
                 : 'bg-quantum-red shadow-[0_0_8px_2px_rgba(255,51,102,0.6)]'
             }`}
           />
-          <span className="text-text-secondary">
-            WebSocket: {wsConnected ? 'LIVE' : 'OFFLINE'}
+          <span className="text-slate-300 font-sans tracking-wide">
+            WebSocket:{' '}
+            <span className={`font-semibold ${wsConnected ? 'text-quantum-green' : 'text-quantum-red'}`}>
+              {wsConnected ? 'LIVE' : 'OFFLINE'}
+            </span>
           </span>
         </div>
-        <span className="font-data hidden text-sm text-quantum-cyan sm:inline">{clock}</span>
+        <span className="font-data tabular-nums hidden text-sm font-semibold tracking-widest text-quantum-cyan sm:inline">{clock}</span>
         <div
           className="hidden h-8 w-8 rounded-full bg-gradient-to-br from-quantum-cyan to-quantum-purple p-px sm:block"
           title="Operator"

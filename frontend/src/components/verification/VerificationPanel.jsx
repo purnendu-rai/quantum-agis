@@ -97,13 +97,13 @@ export default function VerificationPanel() {
   return (
     <Card title="Signature Verification" subtitle="Full 6-layer AGIS stack — test legitimate, tampered, and forged signatures">
       <div className="mb-3 flex flex-wrap items-center gap-2">
-        <span className="text-xs text-slate-500">Signature class:</span>
+        <span className="text-xs font-medium text-slate-400">Signature class:</span>
         {Object.entries(MODES).map(([key, config]) => (
           <button
             key={key}
             type="button"
             onClick={() => setMode(key)}
-            className={`rounded border px-3 py-1 text-xs transition-all ${
+            className={`rounded-md border px-3.5 py-1 text-xs font-semibold tracking-wide transition-all ${
               mode === key ? config.chip : "border-slate-700 text-slate-400 hover:text-slate-200"
             }`}
           >
@@ -120,20 +120,20 @@ export default function VerificationPanel() {
         onSubmit={handleVerify}
         busy={isLoading}
       />
-      <p className="mt-2 text-xs text-slate-500">{active.hint}</p>
+      <p className="mt-2 text-xs leading-relaxed text-slate-300">{active.hint}</p>
       {isLoading && (
         <div className="mt-4">
           <Loader label="Running QGM → HIS → NHGS → TCP → MVS → BTFE…" />
         </div>
       )}
       {error && (
-        <p className="mt-4 text-sm text-rose-300">
+        <p className="mt-4 text-sm font-medium text-rose-300">
           Verification failed: {String(error?.message || error)}
         </p>
       )}
       {result && (
         <div className="mt-4 space-y-3 text-sm">
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2.5">
             <Badge
               label={result.verdict.toUpperCase()}
               variant={
@@ -144,20 +144,20 @@ export default function VerificationPanel() {
                     : "suspicious"
               }
             />
-            <span className="text-slate-300">
-              decision: <span className="font-semibold text-quantum-blue">{result.decision}</span>
+            <span className="text-xs font-medium text-slate-300">
+              decision: <span className="font-bold text-quantum-cyan">{result.decision}</span>
             </span>
-            <span className="text-slate-400">trust {formatTrustScore(result.trust_score)}</span>
-            <span className="text-slate-400">
+            <span className="font-data tabular-nums text-xs font-medium text-slate-300">trust {formatTrustScore(result.trust_score)}</span>
+            <span className="font-data tabular-nums text-xs font-medium text-slate-300">
               V_HOM {(result.hom_visibility * 100).toFixed(1)}%
             </span>
-            <span className="text-slate-400">
+            <span className="font-data tabular-nums text-xs font-medium text-slate-300">
               fidelity {(result.channel_fidelity * 100).toFixed(1)}%
             </span>
-            <span className="text-xs text-slate-500">tested: {MODES[mode].label}</span>
+            <span className="text-xs font-medium text-slate-400">tested: {MODES[mode].label}</span>
           </div>
           {result.decision !== "ACCEPT" && (
-            <p className="rounded border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs text-rose-200">
+            <p className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-3.5 py-2 text-xs font-medium leading-relaxed text-rose-200">
               🚨 Threat detected: this {MODES[mode].label.toLowerCase()} signature failed
               verification — measurement statistics deviated beyond the acceptance thresholds,
               so the stack refused the signature.
@@ -167,14 +167,15 @@ export default function VerificationPanel() {
             {result.layer_results.map((layer) => (
               <li
                 key={layer.layer_id}
-                className="flex items-center justify-between rounded border px-3 py-1.5"
-                style={{ borderColor: "rgba(0, 212, 255, 0.2)" }}
+                className="flex items-center justify-between rounded-lg border px-3 py-1.5 bg-slate-950/40"
+                style={{ borderColor: "rgba(0, 240, 255, 0.2)" }}
               >
-                <span className="text-slate-300">
-                  L{layer.layer_id} {layer.layer_name}
+                <span className="text-xs font-medium text-slate-200">
+                  <span className="font-data tabular-nums font-semibold text-quantum-cyan mr-1.5">L{layer.layer_id}</span>
+                  {layer.layer_name}
                 </span>
                 <span className="flex items-center gap-2">
-                  <span className="text-xs text-slate-500">
+                  <span className="font-data tabular-nums text-xs font-medium text-slate-400">
                     conf {(layer.confidence * 100).toFixed(0)}%
                   </span>
                   <Badge

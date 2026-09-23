@@ -41,7 +41,12 @@ export default function AttackSimulatorPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-semibold">Attack Simulator</h1>
+      <div className="border-b border-white/5 pb-4">
+        <h1 className="text-2xl font-bold tracking-tight text-white">Quantum Attack Simulator</h1>
+        <p className="mt-1 text-xs font-normal text-slate-300">
+          Inject adversarial quantum vectors — forgery, impersonation, replay, channel tampering, and coherent attacks
+        </p>
+      </div>
       {error && <p className="text-xs text-rose-300">backend unreachable — retrying…</p>}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">

@@ -70,8 +70,8 @@ export default function NHSPectrumView() {
       subtitle="Eigenvalue magnitudes — pulsing bars sit at exceptional points"
       accent="#a855f7"
     >
-      <div className="mb-2 flex items-center gap-2 text-xs text-text-secondary">
-        <span>tampering probe:</span>
+      <div className="mb-2 flex items-center gap-2 text-xs font-medium text-slate-300">
+        <span className="uppercase text-[11px] tracking-wider text-slate-400">Tampering probe:</span>
         <input
           type="range"
           min="0"
@@ -81,7 +81,7 @@ export default function NHSPectrumView() {
           onChange={(event) => setTampering(Number(event.target.value))}
           className="flex-1 accent-quantum-purple"
         />
-        <span className="w-8 font-data text-slate-300">{tampering.toFixed(1)}</span>
+        <span className="w-8 font-data tabular-nums text-xs font-semibold text-slate-200">{tampering.toFixed(1)}</span>
       </div>
       {error && <p className="text-xs text-rose-300">spectrum feed unavailable</p>}
       {!data && !error && <Loader label="diagonalising lattice…" />}
@@ -94,14 +94,14 @@ export default function NHSPectrumView() {
                 <stop offset="100%" stopColor="#0080ff" />
               </linearGradient>
             </defs>
-            <XAxis dataKey="mode" stroke="#606080" tick={{ fontSize: 11 }} />
-            <YAxis stroke="#606080" tick={{ fontSize: 11 }} />
+            <XAxis dataKey="mode" stroke="#94a3b8" tick={{ fontSize: 11, fill: '#94a3b8', fontFamily: 'JetBrains Mono, monospace' }} />
+            <YAxis stroke="#94a3b8" tick={{ fontSize: 11, fill: '#94a3b8', fontFamily: 'JetBrains Mono, monospace' }} />
             <Tooltip contentStyle={CHART_TOOLTIP_STYLE} cursor={{ fill: 'rgba(0,240,255,0.05)' }} />
             <ReferenceLine
               y={data.baselineMean}
-              stroke="#606080"
+              stroke="#94a3b8"
               strokeDasharray="4 4"
-              label={{ value: 'baseline', fill: '#606080', fontSize: 10, position: 'insideTopRight' }}
+              label={{ value: 'baseline', fill: '#94a3b8', fontSize: 10, position: 'insideTopRight' }}
             />
             <Bar dataKey="magnitude" radius={[6, 6, 0, 0]} isAnimationActive animationDuration={500}>
               {data.bars.map((bar, index) => (

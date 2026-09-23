@@ -51,8 +51,8 @@ export default function LayerStatusGrid({ layerVerdicts = {}, deviations = {} })
             </div>
             <div className="relative flex items-center justify-between">
               <div className="flex items-center gap-1.5">
-                <Icon size={14} style={{ color, filter: `drop-shadow(0 0 4px ${color}88)` }} />
-                <span className="text-[10px] text-slate-500">L{index}</span>
+                <Icon size={15} style={{ color, filter: `drop-shadow(0 0 5px ${color}88)` }} />
+                <span className="font-data tabular-nums text-xs font-semibold text-slate-400">L{index}</span>
               </div>
               <Badge
                 label={verdict === 'unknown' ? '—' : verdict.toUpperCase()}
@@ -67,16 +67,16 @@ export default function LayerStatusGrid({ layerVerdicts = {}, deviations = {} })
                 }
               />
             </div>
-            <div className="relative mt-1.5 text-sm font-bold" style={{ color }}>
+            <div className="relative mt-2 text-base font-bold tracking-tight" style={{ color }}>
               {name}
             </div>
-            <div className="text-[10px] text-slate-500">{fullName}</div>
+            <div className="text-xs font-normal text-slate-300 leading-tight">{fullName}</div>
 
             {/* Deviation progress bar */}
-            <div className="mt-2">
-              <div className="flex items-center justify-between text-[10px] text-slate-500">
-                <span>deviation</span>
-                <span className="font-data text-slate-400">
+            <div className="mt-2.5">
+              <div className="flex items-center justify-between text-xs font-medium text-slate-400">
+                <span className="text-[11px] font-medium tracking-wider uppercase text-slate-400">Deviation</span>
+                <span className="font-data tabular-nums text-xs font-semibold text-slate-200">
                   {typeof deviation === 'number' ? deviation.toFixed(3) : '—'}
                 </span>
               </div>

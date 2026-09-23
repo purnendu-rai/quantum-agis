@@ -73,8 +73,8 @@ export default function AboutPage() {
           <circle cx="420" cy="140" r="5" fill="#00f0ff" />
         </svg>
         <div className="relative">
-          <h1 className="text-2xl font-bold text-white">QUANTUM-AGIS</h1>
-          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-text-secondary">
+          <h1 className="text-3xl font-extrabold tracking-tight text-white">QUANTUM-AGIS</h1>
+          <p className="mt-2.5 max-w-2xl text-base leading-relaxed text-slate-300">
             Quantum-inspired Agentic Governance &amp; Intrusion Shield — a six-layer
             quantum-secured communication and threat-detection framework built for
             SIH 2026. Signatures are verified by quantum measurement statistics —
@@ -93,13 +93,13 @@ export default function AboutPage() {
               whileHover={{ scale: 1.08 }}
             >
               <span className="text-quantum-cyan">{term.tex}</span>
-              <span className="pointer-events-none absolute -top-9 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded border border-quantum-cyan/30 bg-cosmos px-2.5 py-1 text-[11px] font-sans text-slate-200 group-hover:block">
+              <span className="pointer-events-none absolute -top-9 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded border border-quantum-cyan/30 bg-cosmos px-2.5 py-1 text-xs font-medium font-sans text-slate-200 group-hover:block">
                 {term.meaning}
               </span>
             </motion.div>
           ))}
         </div>
-        <p className="mt-2 text-center text-xs text-slate-500">
+        <p className="font-data tabular-nums mt-3 text-center text-xs font-medium text-slate-300">
           T &gt; 0.95 → ACCEPT · 0.90–0.95 → QUARANTINE · T &lt; 0.90 → REJECT · confidence bounded by 2e^(−2nε²)
         </p>
       </GlassCard>
@@ -114,11 +114,11 @@ export default function AboutPage() {
             className="glass glass-hover relative overflow-hidden p-4"
             style={{ borderColor: `${layer.color}33` }}
           >
-            <div className="text-sm font-bold" style={{ color: layer.color }}>
-              L{layer.id} {layer.code}
+            <div className="font-data tabular-nums text-xs font-bold tracking-wider uppercase" style={{ color: layer.color }}>
+              L{layer.id} · {layer.code}
             </div>
-            <div className="text-xs text-slate-300">{layer.name}</div>
-            <p className="mt-1 text-[11px] text-slate-500">{layer.detail}</p>
+            <div className="mt-1 text-sm font-semibold text-white">{layer.name}</div>
+            <p className="mt-1.5 text-xs leading-relaxed text-slate-300">{layer.detail}</p>
           </motion.div>
         ))}
       </div>

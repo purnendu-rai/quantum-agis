@@ -77,14 +77,14 @@ export default function SecurityEventLog({ events = [] }) {
 
       <div className="overflow-x-auto">
         <table className="w-full text-left text-xs">
-          <thead className="uppercase text-slate-500">
+          <thead className="uppercase text-slate-400 font-semibold tracking-wider border-b border-slate-800">
             <tr>
-              <th className="py-1.5 pr-2">Timestamp</th>
-              <th className="py-1.5 pr-2">Event Type</th>
-              <th className="py-1.5 pr-2">Severity</th>
-              <th className="py-1.5 pr-2">Decision</th>
-              <th className="py-1.5 pr-2">Trust</th>
-              <th className="py-1.5">Details</th>
+              <th className="py-2 pr-3">Timestamp</th>
+              <th className="py-2 pr-3">Event Type</th>
+              <th className="py-2 pr-3">Severity</th>
+              <th className="py-2 pr-3">Decision</th>
+              <th className="py-2 pr-3">Trust</th>
+              <th className="py-2">Details</th>
             </tr>
           </thead>
           <tbody>
@@ -97,13 +97,13 @@ export default function SecurityEventLog({ events = [] }) {
                   initial={{ opacity: 0, x: -14 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.22, ease: 'easeOut' }}
-                  className="border-t border-slate-800/70 hover:bg-quantum-cyan/5"
+                  className="border-t border-slate-800/70 hover:bg-quantum-cyan/5 transition-colors"
                 >
-                  <td className="py-1.5 pr-2 font-mono text-slate-400">
+                  <td className="py-2 pr-3 font-data tabular-nums text-slate-300 font-medium whitespace-nowrap">
                     {event.timestamp ? formatTimestamp(event.timestamp) : '—'}
                   </td>
-                  <td className="py-1.5 pr-2 text-slate-300">{event.source}</td>
-                  <td className="py-1.5 pr-2">
+                  <td className="py-2 pr-3 font-medium text-slate-200">{event.source}</td>
+                  <td className="py-2 pr-3">
                     <Badge
                       label={event.severity?.toUpperCase() ?? 'INFO'}
                       variant={
@@ -115,9 +115,9 @@ export default function SecurityEventLog({ events = [] }) {
                       }
                     />
                   </td>
-                  <td className="py-1.5 pr-2 text-slate-300">{decision}</td>
-                  <td className="py-1.5 pr-2 font-mono text-slate-300">{parseTrust(event)}</td>
-                  <td className="py-1.5 text-slate-400">{event.message}</td>
+                  <td className="py-2 pr-3 font-semibold text-slate-200">{decision}</td>
+                  <td className="py-2 pr-3 font-data tabular-nums text-slate-200 font-medium">{parseTrust(event)}</td>
+                  <td className="py-2 text-slate-300 max-w-md truncate">{event.message}</td>
                 </motion.tr>
               );
             })}

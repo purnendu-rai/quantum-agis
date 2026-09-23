@@ -25,10 +25,10 @@ export default function Sidebar() {
             <NavLink
               to={to}
               className={({ isActive }) =>
-                `flex items-center gap-2.5 rounded-md border-l-2 px-3 py-2 text-sm transition-all duration-200 ${
+                `flex items-center gap-2.5 rounded-md border-l-2 px-3 py-2 text-sm font-medium tracking-normal transition-all duration-200 ${
                   isActive
-                    ? 'border-l-quantum-cyan bg-gradient-to-r from-quantum-cyan/20 to-quantum-purple/20 text-white shadow-[0_0_12px_rgba(0,240,255,0.2)]'
-                    : 'border-l-transparent text-text-secondary hover:translate-x-1 hover:border-slate-600 hover:bg-white/5 hover:text-white'
+                    ? 'border-l-quantum-cyan bg-gradient-to-r from-quantum-cyan/20 to-quantum-purple/20 text-white font-semibold shadow-[0_0_12px_rgba(0,240,255,0.2)]'
+                    : 'border-l-transparent text-slate-300 hover:translate-x-1 hover:border-slate-600 hover:bg-white/5 hover:text-white'
                 }`
               }
             >
@@ -39,10 +39,10 @@ export default function Sidebar() {
         ))}
       </ul>
 
-      <div className="border-t border-white/5 pt-3 text-center text-[10px] leading-relaxed text-text-muted">
-        <span className="font-data text-quantum-cyan">6</span> Layers ·{' '}
-        <span className="font-data text-quantum-purple">5</span> Attacks ·{' '}
-        <span className="font-data text-quantum-green">0</span> AI
+      <div className="border-t border-white/5 pt-3 text-center text-xs font-medium leading-relaxed text-slate-400">
+        <span className="font-data tabular-nums font-semibold text-quantum-cyan">6</span> Layers ·{' '}
+        <span className="font-data tabular-nums font-semibold text-quantum-purple">5</span> Attacks ·{' '}
+        <span className="font-data tabular-nums font-semibold text-quantum-green">0</span> AI
       </div>
     </nav>
   );
